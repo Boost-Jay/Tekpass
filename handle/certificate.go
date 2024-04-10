@@ -65,7 +65,7 @@ func CheckHandler(c *gin.Context) {
 		return
 	}
 
-	userID := decryptResult.Plaintext[:len(decryptResult.Plaintext)-16]
+	userID := decryptResult.Plaintext[:len(decryptResult.Plaintext)]
 	log.Printf("userId: %s", string(userID))
 
 	if ssoToken == "" || string(userID) == "" {
