@@ -1,6 +1,7 @@
 package handle
 
 import (
+	"crypto/rand"
 	"encoding/base64"
 	"fmt"
 	"log"
@@ -14,11 +15,10 @@ var (
 	// xlh       = "2TNsA6a2C6JQLnZl26dNF7RDv3lBUokiUZdRZED_szx2VsVxKUODgT1DOwgTrs1Zr1IVtunk6d8vNqaB5zW-BhNDYK9HZ1THjZSLuRZ0eO-qPSUuLClQS3p7JMLoGVN24QBSrDUmxBM"
 	// xlhPin    = "004309"
 	// xlhUser   = "User-1670460972576"
-	randBytes []byte
-	apexid    string
-	ssoID     string
-	ssoToken  string
-	userData  string
+	apexid   string
+	ssoID    string
+	ssoToken string
+	userData string
 )
 
 // 驗證 SSO token 和用戶 ID。
@@ -43,6 +43,12 @@ func CheckHandler(c *gin.Context) {
 		return
 	}
 	log.Printf("plain: %v", plain)
+
+	randBytes := make([]byte, 48)
+	if _, err := rand.Read(randBytes); err != nil {
+		log.Println("Error generating random bytes:", err)
+		return
+	}
 
 	qrKey := randBytes[:32]
 	qrIV := randBytes[32:48]
