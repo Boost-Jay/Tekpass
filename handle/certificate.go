@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"weston.io/Apex-Agent/network/socket"
 	"weston.io/Apex-Agent/repository"
 )
 
@@ -139,6 +140,8 @@ func ResultHandler(c *gin.Context) {
 	userData = reqBody["sso_token"]
 	log.Printf("sso_id length: %d", len(ssoID))
 	log.Printf("userData length: %d", len(userData))
+
+	network.Client.Emit("response", userData)
 
 	c.JSON(http.StatusOK, gin.H{"sso_id": ssoID, "sso_token": userData})
 }

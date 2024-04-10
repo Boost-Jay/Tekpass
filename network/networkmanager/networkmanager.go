@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/zishang520/socket.io/v2/socket"
+	"weston.io/Apex-Agent/network/socket"
 	router "weston.io/Apex-Agent/network/tekpassrouters"
 )
 
@@ -14,7 +15,7 @@ func StartServer() {
 	io := socket.NewServer(nil, nil)
 	io.On("connection", func(clients ...any) {
 		client := clients[0].(*socket.Socket)
-		router.HandleWebSocket(client)
+		network.HandleWebSocket(client)
 	})
 
 	app.GET("/socket.io/*any", gin.WrapH(io.ServeHandler(nil)))

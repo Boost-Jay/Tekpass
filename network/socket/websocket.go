@@ -1,4 +1,4 @@
-package tekpassrouters
+package network
 
 import (
 	"crypto/rand"
@@ -11,6 +11,8 @@ import (
 
 	"github.com/zishang520/socket.io/v2/socket"
 )
+
+var Client *socket.Socket
 
 func HandleWebSocket(client *socket.Socket) {
 	log.Println("WebSocket connection established")
@@ -48,6 +50,8 @@ func HandleWebSocket(client *socket.Socket) {
 	client.On("disconnect", func(...any) {
 		log.Println("WebSocket connection closed")
 	})
+
+	Client = client
 }
 
 // 獲取本地 IP 地址

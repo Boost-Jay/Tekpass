@@ -1,4 +1,4 @@
-package tekpassrouters
+package network
 
 import (
 	"time"
