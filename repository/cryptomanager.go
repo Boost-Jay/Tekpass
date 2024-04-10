@@ -35,7 +35,7 @@ func AesGCMEncrypt(key, data, iv []byte) ([]byte, []byte, error) {
 		}
 	}
 	// AES 塊加密算法與 GCM 模式結合，返回 AEAD 接口，自動處理認證標籤的生成和驗證。
-	aesGCM, err := cipher.NewGCMWithNonceSize(block, 18)
+	aesGCM, err := cipher.NewGCMWithNonceSize(block, 16)
 	if err != nil {
 		return nil, nil, err
 	}
