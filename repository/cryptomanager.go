@@ -90,16 +90,16 @@ func AesGCMDecrypt(key, ciphertext, iv []byte) ([]byte, error) {
 }
 
 func ConcurrentDecrypt(tasks []DecryptTask) {
-	var wg sync.WaitGroup
+	// var wg sync.WaitGroup
 	for _, task := range tasks {
-		wg.Add(1)
+		// wg.Add(1)
 		go func(task DecryptTask) {
-			defer wg.Done()
+			// defer wg.Done()
 			plaintext, err := AesGCMDecrypt(task.Key, task.Ciphertext, task.IV)
 			task.Result <- DecryptResult{Plaintext: plaintext, Err: err}
 		}(task)
 	}
-	wg.Wait()
+	// wg.Wait()
 }
 
 // 驗證 SSO token
