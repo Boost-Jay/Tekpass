@@ -116,13 +116,13 @@ func SsoCheck(userID, ssoToken string, result chan<- SsoCheckResult) {
 }
 
 func ConcurrentSsoCheck(requests []SsoCheckRequest) {
-	var wg sync.WaitGroup
+	// var wg sync.WaitGroup
 	for _, req := range requests {
-		wg.Add(1)
+		// wg.Add(1)
 		go func(req SsoCheckRequest) {
-			defer wg.Done()
+			// defer wg.Done()
 			SsoCheck(req.UserID, req.SsoToken, req.Result)
 		}(req)
 	}
-	wg.Wait()
+	// wg.Wait()
 }
