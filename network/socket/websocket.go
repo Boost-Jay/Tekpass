@@ -14,6 +14,8 @@ import (
 
 var Client *socket.Socket
 
+var RandBytes []byte
+
 func HandleWebSocket(client *socket.Socket) {
 	log.Println("WebSocket connection established")
 
@@ -43,6 +45,8 @@ func HandleWebSocket(client *socket.Socket) {
 		// 	log.Println("Error marshaling JSON:", err)
 		// 	return
 		// }
+
+		RandBytes = randBytes
 
 		client.Emit("acknowledge", response)
 	})

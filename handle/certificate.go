@@ -1,7 +1,6 @@
 package handle
 
 import (
-	"crypto/rand"
 	"encoding/base64"
 	"fmt"
 	"log"
@@ -45,14 +44,10 @@ func CheckHandler(c *gin.Context) {
 	}
 	log.Printf("plain: %v", plain)
 
-	randBytes := make([]byte, 48)
-	if _, err := rand.Read(randBytes); err != nil {
-		log.Println("Error generating random bytes:", err)
-		return
-	}
 
-	qrKey := randBytes[:32]
-	qrIV := randBytes[32:48]
+	
+	qrKey := network.RandBytes[:32]
+	qrIV := network.RandBytes[32:48]
 
 	decryptTasks := []repository.DecryptTask{
 		{
