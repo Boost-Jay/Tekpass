@@ -1,6 +1,9 @@
 package tekpassrouters
 
 import (
+	"time"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	apiv1 "weston.io/Apex-Agent/handle"
 )
@@ -17,6 +20,15 @@ const (
 
 func InitRouter() *gin.Engine {
 	app := gin.Default()
+
+	app.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	tekpassApiv1 := app.Group("")
 	{

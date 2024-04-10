@@ -2,33 +2,31 @@ package networkmanager
 
 import (
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
-	https "weston.io/Apex-Agent/network/httpconfig"
+	"github.com/zishang520/socket.io/v2/socket"
 	router "weston.io/Apex-Agent/network/tekpassrouters"
-
 )
 
 func StartServer() {
-	tlsConfig, err := https.GetRequireHttp()
-	if err != nil {
-		log.Fatalf("Failed to get TLS configuration: %v", err)
-	}
-
 	app := router.InitRouter()
 
-	app.GET("/ws", func(c *gin.Context) {
-		router.HandleWebSocket(c.Writer, c.Request)
+	io := socket.NewServer(nil, nil)
+	io.On("connection", func(clients ...any) {
+		client := clients[0].(*socket.Socket)
+		router.HandleWebSocket(client)
 	})
 
-	server := &http.Server{
-		Addr:      ":8080",
-		TLSConfig: tlsConfig,
-		Handler:   app,
-	}
+	app.GET("/socket.io/*any", gin.WrapH(io.ServeHandler(nil)))
 
-	err = server.ListenAndServeTLS("", "")
+	// 設置 TLS 設定
+	app.Use(func(c *gin.Context) {
+		c.Request.URL.Scheme = "https"
+		c.Next()
+	})
+
+	// 使用 RunTLS 啟動伺服器
+	err := app.RunTLS(":8080", "ca.pem", "privatekey.pem")
 	if err != nil {
 		log.Fatal(err)
 	}

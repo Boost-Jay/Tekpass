@@ -1,14 +1,13 @@
 package handle
 
 import (
-    "log"
 	"encoding/base64"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"weston.io/Apex-Agent/repository"
-
 )
 
 var (
@@ -119,6 +118,9 @@ func CheckHandler(c *gin.Context) {
 // 接收 SSO ID 和用戶數據。
 func ResultHandler(c *gin.Context) {
 	log.Println("/cgi-bin/TekpassResult")
+
+	// 限制請求體大小為 10KB
+	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, 10240)
 
 	var reqBody map[string]string
 	err := c.BindJSON(&reqBody)
