@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"weston.io/Apex-Agent/network/socket"
+	network "weston.io/Apex-Agent/network/socket"
 	"weston.io/Apex-Agent/repository"
 )
 
@@ -44,8 +44,6 @@ func CheckHandler(c *gin.Context) {
 	}
 	log.Printf("plain: %v", plain)
 
-
-	
 	qrKey := network.RandBytes[:32]
 	qrIV := network.RandBytes[32:48]
 
@@ -92,22 +90,14 @@ func CheckHandler(c *gin.Context) {
 	if ssoCheckResult.Valid {
 		if apexid == "" {
 			apexid = string(userID)
-			extraData := gin.H{
-				"message": "SSO token and user ID are valid",
-				"user_id": string(userID),
-			}
-			c.JSON(http.StatusOK, extraData)
+			c.JSON(http.StatusOK, textBody("", http.StatusOK))
 			return
 		} else {
 			if string(userID) != apexid {
 				c.AbortWithStatus(400)
 				return
 			} else {
-				extraData := gin.H{
-					"message": "SSO token and user ID are valid",
-					"user_id": string(userID),
-				}
-				c.JSON(http.StatusOK, extraData)
+				c.JSON(http.StatusOK, textBody("", http.StatusOK))
 				return
 			}
 		}
@@ -115,6 +105,7 @@ func CheckHandler(c *gin.Context) {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
+
 }
 
 // 接收 SSO ID 和用戶數據。
@@ -143,4 +134,17 @@ func ResultHandler(c *gin.Context) {
 
 func VersionNoHandler(c *gin.Context) {
 	c.String(http.StatusOK, "version 0.3")
+}
+
+func textBody(body any, status int) map[string]any {
+	return map[string]any{
+		"isBase64Encoded": false,
+		"statusCode":      status,
+		"headers":         commonHeaders(),
+		"body":            body,
+	}
+}
+
+func commonHeaders() map[string]any {
+	return map[string]any{}
 }
