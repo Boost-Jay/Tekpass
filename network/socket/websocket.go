@@ -3,11 +3,8 @@ package network
 import (
 	"crypto/rand"
 	"encoding/base64"
-
-	// "encoding/json"
 	"fmt"
 	"log"
-	"net"
 
 	"github.com/zishang520/socket.io/v2/socket"
 )
@@ -16,7 +13,7 @@ var Client *socket.Socket
 
 var RandBytes []byte
 
-func HandleWebSocket(client *socket.Socket) {
+func HandleWebSocket(client *socket.Socket, host string) {
 	log.Println("WebSocket connection established")
 
 	client.On("tekpass", func(datas ...any) {
@@ -26,25 +23,7 @@ func HandleWebSocket(client *socket.Socket) {
 			return
 		}
 
-		var localip = getLocalIPAddress()
-		if localip == "" {
-			log.Println("Error getting local IP address")
-			return
-		} else {
-			log.Printf("Local IP address: %s", localip)
-		}
-
-		response := fmt.Sprintf("https://tekpass.com.tw/sso?receiver=%s:8080&token=%s", localip, base64.RawURLEncoding.EncodeToString(randBytes))
-		// data := map[string]string{
-		// 	"event": "acknowledge",
-		// 	"data":  response,
-		// }
-
-		// jsonData, err := json.Marshal(data)
-		// if err != nil {
-		// 	log.Println("Error marshaling JSON:", err)
-		// 	return
-		// }
+		response := fmt.Sprintf("https://tekpass.com.tw/sso?receiver=%s&token=%s", host, base64.RawURLEncoding.EncodeToString(randBytes))
 
 		RandBytes = randBytes
 
@@ -56,21 +35,4 @@ func HandleWebSocket(client *socket.Socket) {
 	})
 
 	Client = client
-}
-
-// 獲取本地 IP 地址
-func getLocalIPAddress() string {
-	addrs, err := net.InterfaceAddrs()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for _, address := range addrs {
-		if ipnet, ok := address.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
-			if ipnet.IP.To4() != nil {
-				return ipnet.IP.String()
-			}
-		}
-	}
-	return ""
 }
