@@ -3,7 +3,8 @@ package tekpassrouters
 import (
 	"crypto/rand"
 	"encoding/base64"
-	"encoding/json"
+
+	// "encoding/json"
 	"fmt"
 	"log"
 	"net"
@@ -30,18 +31,18 @@ func HandleWebSocket(client *socket.Socket) {
 		}
 
 		response := fmt.Sprintf("https://tekpass.com.tw/sso?receiver=%s:8080&token=%s", localip, base64.RawURLEncoding.EncodeToString(randBytes))
-		data := map[string]string{
-			"event": "acknowledge",
-			"data":  response,
-		}
+		// data := map[string]string{
+		// 	"event": "acknowledge",
+		// 	"data":  response,
+		// }
 
-		jsonData, err := json.Marshal(data)
-		if err != nil {
-			log.Println("Error marshaling JSON:", err)
-			return
-		}
+		// jsonData, err := json.Marshal(data)
+		// if err != nil {
+		// 	log.Println("Error marshaling JSON:", err)
+		// 	return
+		// }
 
-		client.Emit("acknowledge", string(jsonData))
+		client.Emit("acknowledge", response)
 	})
 
 	client.On("disconnect", func(...any) {
