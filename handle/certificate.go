@@ -85,6 +85,8 @@ func CheckHandler(c *gin.Context) {
 		log.Println(ssoCheckResult.Err)
 		c.AbortWithError(500, ssoCheckResult.Err)
 		return
+	} else {
+		log.Println(ssoCheckRequests[0].UserID, "已經登入")
 	}
 
 	if ssoCheckResult.Valid {
